@@ -12,10 +12,11 @@ const Users = () => {
             setLoading(true);
             setError(false);
 
-            setTimeout(async () => {
-                const res = await axios.get(
-                    "https://jsonplacehdolder.typicode.com/users"
-                );
+            const res = await axios.get(
+                "https://jsonplaceholder.typicode.com/users"
+            );
+
+            setTimeout(() => {
                 if (res.status === 200) {
                     setLoading(false);
                     setUsers(res.data);
@@ -47,7 +48,7 @@ const Users = () => {
                 </thead>
                 <tbody>
                     {error === true
-                        ? "Ha ocurrido un error al bucar los datgos"
+                        ? "Ha ocurrido un error al buscar los datos"
                         : users.map(user => {
                               return (
                                   <tr>
