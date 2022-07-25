@@ -1,7 +1,6 @@
 table {
     border: 1px double #000;
     background-color: #f0ffff;
-    font-weight: bold;
 }
 td, th {
     border: 1px double #000;

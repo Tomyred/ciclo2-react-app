@@ -3,15 +3,6 @@ import Table from "../../components/Table/Table";
 import "./TodoList.css";
 import uniqid from "uniqid";
 
-// const foo = {
-//     taskName: "Hacer la cama",
-//     priority: 1,
-// }
-
-// foo["priority"]
-//     ===
-// foo.priority
-
 const cabecera = ["Tarea", "Prioridad", "Acciones"];
 
 const ToDoList = () => {
@@ -21,10 +12,20 @@ const ToDoList = () => {
 
     const handleInputChange = e => {
         setNuevaTarea({ ...nuevaTarea, [e.target.name]: e.target.value });
+
+        console.log(nuevaTarea);
     };
 
     const handleClick = () => {
-        setTareas([...tareas, { ...nuevaTarea, id: uniqid() }]);
+        if (nuevaTarea.taskName && nuevaTarea.taskName.length > 4) {
+            if (nuevaTarea.priority) {
+                setTareas([...tareas, { ...nuevaTarea, id: uniqid() }]);
+            } else {
+                alert("Debe asignarle una prioridad a la tarea");
+            }
+        } else {
+            alert("Debe tener mas de 4 caracteres");
+        }
     };
 
     const handleDelete = id => {
@@ -35,7 +36,13 @@ const ToDoList = () => {
         setTareas(newArray);
     };
 
-    // const handleEdit = item => {};
+    const handleEdit = id => {
+        const findedTask = tareas.find(task => {
+            return task.id === id;
+        });
+
+        console.log(findedTask);
+    };
 
     const setPriorityColor = priority => {
         const parsedPriority = Number(priority);
@@ -104,11 +111,14 @@ const ToDoList = () => {
                                 >
                                     <span
                                         onClick={() => handleDelete(item.id)}
-                                        class="material-icons pointer"
+                                        className="material-icons pointer"
                                     >
                                         delete
                                     </span>
-                                    <span class="material-icons pointer">
+                                    <span
+                                        onClick={() => handleEdit(item.id)}
+                                        className="material-icons pointer"
+                                    >
                                         edit
                                     </span>
                                 </td>
