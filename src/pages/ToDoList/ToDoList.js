@@ -7,24 +7,52 @@ const cabecera = ["Tarea", "Prioridad", "Acciones"];
 
 const ToDoList = () => {
     const [tareas, setTareas] = useState([]);
-
-    const [nuevaTarea, setNuevaTarea] = useState({});
+    const [editing, setEditing] = useState(false);
+    const [nuevaTarea, setNuevaTarea] = useState({
+        taskName: "",
+        priority: "1",
+    });
 
     const handleInputChange = e => {
         setNuevaTarea({ ...nuevaTarea, [e.target.name]: e.target.value });
+    };
 
-        console.log(nuevaTarea);
+    const numEx = () => {
+        const numeros = [2, 13, 6, 8, 15, 65];
+
+        const nuevoArray = numeros.map(numero => {
+            if (numero < 10) {
+                return "Es menor a 10";
+            } else {
+                return numero;
+            }
+        });
+
+        console.log(nuevoArray);
     };
 
     const handleClick = () => {
-        if (nuevaTarea.taskName && nuevaTarea.taskName.length > 4) {
-            if (nuevaTarea.priority) {
-                setTareas([...tareas, { ...nuevaTarea, id: uniqid() }]);
-            } else {
-                alert("Debe asignarle una prioridad a la tarea");
-            }
+        if (editing === true) {
+            const newArray = tareas.map(tarea => {
+                if (tarea.id === nuevaTarea.id) {
+                    return nuevaTarea;
+                } else {
+                    return tarea;
+                }
+            });
+
+            setTareas(newArray);
+            setEditing(false);
         } else {
-            alert("Debe tener mas de 4 caracteres");
+            if (nuevaTarea.taskName && nuevaTarea.taskName.length > 4) {
+                if (nuevaTarea.priority) {
+                    setTareas([...tareas, { ...nuevaTarea, id: uniqid() }]);
+                } else {
+                    alert("Debe asignarle una prioridad a la tarea");
+                }
+            } else {
+                alert("Debe tener mas de 4 caracteres");
+            }
         }
     };
 
@@ -36,12 +64,9 @@ const ToDoList = () => {
         setTareas(newArray);
     };
 
-    const handleEdit = id => {
-        const findedTask = tareas.find(task => {
-            return task.id === id;
-        });
-
-        console.log(findedTask);
+    const setEdit = tarea => {
+        setEditing(true);
+        setNuevaTarea(tarea);
     };
 
     const setPriorityColor = priority => {
@@ -60,6 +85,7 @@ const ToDoList = () => {
 
     return (
         <div className="todoList__container">
+            <h1>Aplicacion CRUD</h1>
             <span> Nombre de la tarea </span>
             <br />
             <input
@@ -67,6 +93,7 @@ const ToDoList = () => {
                 name="taskName"
                 onChange={handleInputChange}
                 placeholder="Tarea"
+                value={nuevaTarea.taskName}
             />
             <br />
             <span> Importancia </span>
@@ -78,8 +105,18 @@ const ToDoList = () => {
                 type="range"
                 min="1"
                 max="5"
+                value={nuevaTarea.priority}
             />
-            <button onClick={handleClick}> Agregar tarea </button>
+            <button onClick={handleClick}>
+                {editing ? "Editar tarea" : "Agregar tarea"}
+            </button>
+
+            {editing === true ? (
+                <button onClick={() => setEditing(false)}>Cancelar</button>
+            ) : (
+                <></>
+            )}
+
             <table>
                 <thead>
                     <tr>
@@ -89,34 +126,34 @@ const ToDoList = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {tareas.map((item, index) => {
+                    {tareas.map((tarea, index) => {
                         return (
                             <tr key={index}>
-                                <td> {item.taskName} </td>
+                                <td> {tarea.taskName} </td>
                                 <td
                                     style={{
                                         background: setPriorityColor(
-                                            item.priority
+                                            tarea.priority
                                         ),
                                     }}
                                 >
-                                    {item.priority}
+                                    {tarea.priority}
                                 </td>
                                 <td
                                     style={{
                                         display: "flex",
-                                        alignItems: "center",
+                                        aligntareas: "center",
                                         justifyContent: "space-between",
                                     }}
                                 >
                                     <span
-                                        onClick={() => handleDelete(item.id)}
+                                        onClick={() => handleDelete(tarea.id)}
                                         className="material-icons pointer"
                                     >
                                         delete
                                     </span>
                                     <span
-                                        onClick={() => handleEdit(item.id)}
+                                        onClick={() => setEdit(tarea)}
                                         className="material-icons pointer"
                                     >
                                         edit
