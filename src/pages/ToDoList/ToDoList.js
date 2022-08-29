@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import Table from "../../components/Table/Table";
+import React, { useEffect, useState } from "react";
 import "./TodoList.css";
 import uniqid from "uniqid";
+import { Button } from "@mui/material";
 
 const cabecera = ["Tarea", "Prioridad", "Acciones"];
 
@@ -12,6 +12,13 @@ const ToDoList = () => {
         taskName: "",
         priority: "1",
     });
+    const [crazyTime, setCrazyTime] = useState(false);
+
+    function foo() {
+        console.log("hola");
+    }
+
+    useEffect(foo, [crazyTime]);
 
     const handleInputChange = e => {
         setNuevaTarea({ ...nuevaTarea, [e.target.name]: e.target.value });
@@ -69,6 +76,11 @@ const ToDoList = () => {
         setNuevaTarea(tarea);
     };
 
+    const handleCancel = () => {
+        setEditing(false);
+        setNuevaTarea({ taskName: "", priority: "1" });
+    };
+
     const setPriorityColor = priority => {
         const parsedPriority = Number(priority);
 
@@ -83,9 +95,24 @@ const ToDoList = () => {
         }
     };
 
+    const startCrazyButton = () => {
+        setInterval(() => {
+            setCrazyTime(!crazyTime);
+        }, 1000);
+    };
+
     return (
         <div className="todoList__container">
             <h1>Aplicacion CRUD</h1>
+            <Button
+                onClick={startCrazyButton}
+                variant="contained"
+                color={crazyTime ? "error" : "secondary"}
+            >
+                Crazy button!!
+            </Button>
+            <br />
+            <br />
             <span> Nombre de la tarea </span>
             <br />
             <input
@@ -107,12 +134,18 @@ const ToDoList = () => {
                 max="5"
                 value={nuevaTarea.priority}
             />
-            <button onClick={handleClick}>
-                {editing ? "Editar tarea" : "Agregar tarea"}
-            </button>
+            <Button
+                color={editing === true ? "secondary" : "success"}
+                variant="contained"
+                onClick={handleClick}
+            >
+                {editing === true ? "Editar tarea" : "Agregar tarea"}
+            </Button>
 
             {editing === true ? (
-                <button onClick={() => setEditing(false)}>Cancelar</button>
+                <Button variant="outlined" color="error" onClick={handleCancel}>
+                    Cancelar
+                </Button>
             ) : (
                 <></>
             )}
